@@ -17,12 +17,13 @@ public class GravityInteractable : MonoBehaviour
     GameObject rightHand, leftHand;
     XRController rightHandController, leftHandController;
 
+    Vector3 gravity = new Vector3(0, -9.81f, 0);
+    bool isGravityEnabled = true;
 
-
+    Vector3 preSelectVelocity = Vector3.zero;
 
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         rend = GetComponent<Renderer>();
         rb = GetComponent<Rigidbody>();
         interactable = GetComponent<XRBaseInteractable>();
@@ -40,49 +41,45 @@ public class GravityInteractable : MonoBehaviour
     // Update is called once per frame
     void Update() {
 
+        Vector3 handDirection = Vector3.zero;
+
         if(leftHandSelected) {
             rend.material.color = Color.blue;
+            handDirection = leftHand.transform.forward;
 
-            if (isActivated) {
-                // Get the direction that the left hand is pointing
-                Vector3 leftHandDirection = leftHand.transform.forward;
-                leftHandDirection = leftHandDirection.normalized * 10.8f;
-
-                // Apply an acceleration to the object
-                rb.AddForce(leftHandDirection, ForceMode.Acceleration);
-
-                // make the left hand controller vibrate
-                leftHandController.SendHapticImpulse(0.5f, 0.1f);
-            }
+            // Slow down the object when it's selected
+            rb.velocity = rb.velocity * 0.8f;
         }
 
         else if(rightHandSelected) {
             rend.material.color = Color.green;
+            handDirection = rightHand.transform.forward;
             
-            if(isActivated) {
-                // Get the direction that the right hand is facing
-                Vector3 rightHandDirection = rightHand.transform.forward;
-                rightHandDirection = rightHandDirection.normalized * 10.8f;
-
-                // Apply an acceleration in the firectoin that the controller is pointing
-                rb.AddForce(rightHandDirection, ForceMode.Acceleration);
-
-                // make the right hand controller vibrate
-                rightHandController.SendHapticImpulse(0.5f, 0.1f);
-            }
+            // Slow down the object when it's selected
+            rb.velocity = rb.velocity * 0.8f;
         }
 
         else {
             rend.material.color = Color.black;
+
+            // accelerate the object in the direction of its gravity vector
+            if(isGravityEnabled) {
+                rb.AddForce(gravity, ForceMode.Acceleration);
+            }
         }
 
 
-        if(rightHandInteractor == null || leftHandInteractor == null) {
+        if (isActivated) {
             rend.material.color = Color.red;
+
+            // Set the gravity vector to be in the direction that the hand is pointing
+            gravity = handDirection.normalized * 9.81f;
         }
     }
 
     public void setSelected() {
+        preSelectVelocity = rb.velocity;
+
         if (rightHandInteractor.selectTarget == interactable) {
             rightHandSelected = true;
         }
@@ -92,6 +89,8 @@ public class GravityInteractable : MonoBehaviour
     }
 
     public void setUnselected() {
+        rb.velocity = preSelectVelocity;
+
         rightHandSelected = false;
         leftHandSelected = false;
     }
