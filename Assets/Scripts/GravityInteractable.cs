@@ -2,9 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.InputSystem;
+
+// using OculusIntegration.unitypackage;
 
 public class GravityInteractable : MonoBehaviour
 {
+    
+    // InputAction leftPrimaryButtonAction;
+    // InputAction rightPrimaryButtonAction;
+    // InputAction leftSecondaryButtonAction;
+    // InputAction rightSecondaryButtonAction;
+    
     bool leftHandSelected = false;
     bool rightHandSelected = false;
     bool isActivated = false;
@@ -36,6 +45,10 @@ public class GravityInteractable : MonoBehaviour
         leftHandInteractor = leftHand.GetComponent<XRBaseInteractor>();
         rightHandController = rightHand.GetComponent<XRController>();
         leftHandController = leftHand.GetComponent<XRController>();
+
+        // Set up the input actions to use the xr controller inputs
+        // leftPrimaryButtonAction = new InputAction(binding: "<LeftHand>/trigger");
+
     }
 
     // Update is called once per frame
@@ -68,13 +81,23 @@ public class GravityInteractable : MonoBehaviour
             }
         }
 
-
         if (isActivated) {
             rend.material.color = Color.red;
 
             // Set the gravity vector to be in the direction that the hand is pointing
             gravity = handDirection.normalized * 9.81f;
         }
+
+        if (OVRInput.Get(OVRInput.Button.One) && (rightHandSelected || leftHandSelected)) {
+            c.r = 1.0f;
+            c.g = 0.0f;
+            c.b = 1.0f;
+            rend.material.color = c;
+
+            // Set gravity back to normal
+            gravity = new Vector3(0, -9.81f, 0);
+        }
+      
     }
 
     public void setSelected() {
@@ -93,6 +116,7 @@ public class GravityInteractable : MonoBehaviour
 
         rightHandSelected = false;
         leftHandSelected = false;
+        isActivated = false;
     }
 
     public void setActivated() {
