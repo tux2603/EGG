@@ -88,7 +88,7 @@ public class GravityInteractable : MonoBehaviour
             gravity = handDirection.normalized * 9.81f;
         }
 
-        if (OVRInput.Get(OVRInput.Button.One) && (rightHandSelected || leftHandSelected)) {
+        if (OVRInput.Get(OVRInput.Button.Two) && (rightHandSelected || leftHandSelected)) {
             c.r = 1.0f;
             c.g = 0.0f;
             c.b = 1.0f;

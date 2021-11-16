@@ -9,7 +9,9 @@ public class PlayerControl : MonoBehaviour
 
     GameObject leftHand;
     GameObject rightHand;
-    bool wasButtonPressed = false;
+    ParticleSystem leftHandParticles;
+    ParticleSystem rightHandParticles;
+    Rigidbody rb;
 
 
     // Start is called before the first frame update
@@ -17,33 +19,43 @@ public class PlayerControl : MonoBehaviour
     {
         leftHand = GameObject.Find("Camera Offset/LeftHand Controller");
         rightHand = GameObject.Find("Camera Offset/RightHand Controller");
+        leftHandParticles = GameObject.Find("Camera Offset/LeftHand Controller/Particle System").GetComponent<ParticleSystem>();
+        rightHandParticles = GameObject.Find("Camera Offset/RightHand Controller/Particle System").GetComponent<ParticleSystem>();
+        rb = GetComponent<Rigidbody>();
+        
     }
 
     // Update is called once per frame
     void Update()
     {
         if(OVRInput.Get(OVRInput.Button.PrimaryThumbstick)) {
-            motionProvider.moveSpeed = 50.0f;
+            motionProvider.moveSpeed = 10.0f;
         }
 
         else {
             motionProvider.moveSpeed = 5.0f;
         }
 
-        // Set the global gravity to the opposite direction of the left hand when button.three is pressed
-        if(OVRInput.Get(OVRInput.Button.Three) && !wasButtonPressed) {
-            Physics.gravity = leftHand.transform.forward.normalized * 9.81f;
-            
-            // // Move the player up a bit so they don't clip through things too badly
-            // transform.position += transform.up * 2.0f;
-
-            // // set the upvector of the player to the left hand
-            // transform.up = -leftHand.transform.forward.normalized;
-
-            // transform.position += transform.up;
-
+        // If the Button one is pressed apply a small acceleration to the player in the opposite directon that the right hand is pointing
+        if(OVRInput.Get(OVRInput.Button.One)) {
+            rb.AddForce(rightHand.transform.forward.normalized * -7.0f, ForceMode.Acceleration);
+            motionProvider.moveSpeed = 0.0f;
+            rightHandParticles.Play();
         }
 
-        wasButtonPressed = OVRInput.Get(OVRInput.Button.Three);
+        else {
+            rightHandParticles.Stop();
+        }
+
+        // Same thing for button three on the left hand
+        if(OVRInput.Get(OVRInput.Button.Three)) {
+            rb.AddForce(leftHand.transform.forward.normalized * -7.0f, ForceMode.Acceleration);
+            motionProvider.moveSpeed = 0.0f;
+            leftHandParticles.Play();
+        }
+
+        else {
+            leftHandParticles.Stop();
+        }
     }
 }
