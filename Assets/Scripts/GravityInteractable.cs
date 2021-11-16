@@ -24,7 +24,7 @@ public class GravityInteractable : MonoBehaviour
     XRBaseInteractable interactable;
     XRBaseInteractor rightHandInteractor, leftHandInteractor;
     GameObject rightHand, leftHand;
-    XRController rightHandController, leftHandController;
+    // XRController rightHandController, leftHandController;
 
     Vector3 gravity = new Vector3(0, -9.81f, 0);
     bool isGravityEnabled = true;
@@ -43,8 +43,8 @@ public class GravityInteractable : MonoBehaviour
         leftHand = GameObject.Find("Camera Offset/LeftHand Controller");
         rightHandInteractor = rightHand.GetComponent<XRBaseInteractor>();
         leftHandInteractor = leftHand.GetComponent<XRBaseInteractor>();
-        rightHandController = rightHand.GetComponent<XRController>();
-        leftHandController = leftHand.GetComponent<XRController>();
+        // rightHandController = rightHand.GetComponent<XRController>();
+        // leftHandController = leftHand.GetComponent<XRController>();
 
         // Set up the input actions to use the xr controller inputs
         // leftPrimaryButtonAction = new InputAction(binding: "<LeftHand>/trigger");
@@ -88,7 +88,7 @@ public class GravityInteractable : MonoBehaviour
             gravity = handDirection.normalized * 9.81f;
         }
 
-        if (OVRInput.Get(OVRInput.Button.One) && (rightHandSelected || leftHandSelected)) {
+        if (OVRInput.Get(OVRInput.Button.Two) && (rightHandSelected || leftHandSelected)) {
             c.r = 1.0f;
             c.g = 0.0f;
             c.b = 1.0f;
