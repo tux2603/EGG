@@ -7,10 +7,12 @@ public class ConfettiButton : MonoBehaviour
     ParticleSystem confetti;
     // Collider collider;
     float confettiTimer = 0.0f;
+    AudioSource audioSource;
 
     // Start is called before the first frame update
     void Start() {
         confetti = GetComponent<ParticleSystem>();
+        audioSource = GetComponent<AudioSource>();
         // collider = GetComponent<Collider>();
 
         // // Add callback for collisions on the button
@@ -31,5 +33,6 @@ public class ConfettiButton : MonoBehaviour
     void OnCollisionEnter(Collision collision) {
         confetti.Play();
         confettiTimer = 1.0f;
+        audioSource.Play();
     }
 }
