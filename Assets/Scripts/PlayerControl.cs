@@ -17,6 +17,9 @@ public class PlayerControl : MonoBehaviour
     AudioSource rightHandAudio;
     Rigidbody rb;
 
+    bool leftRocketWasRunning = false;
+    bool rightRocketWasRunning = false;
+
     bool buttonFourWasPressed = false;
     bool rotationLocked = true;
 
@@ -53,13 +56,19 @@ public class PlayerControl : MonoBehaviour
             motionProvider.moveSpeed = 0.0f;
             rightHandParticles.Play();
             rightHandLine.lineLength = 0.0f;
-            rightHandAudio.Play();
+            
+
+            if(!rightRocketWasRunning) {
+                rightHandAudio.Play();
+                rightRocketWasRunning = true;
+            }
         }
 
         else {
             rightHandParticles.Stop();
             rightHandLine.lineLength = 10.0f;
             rightHandAudio.Stop();
+            rightRocketWasRunning = false;
         }
 
 
@@ -69,13 +78,18 @@ public class PlayerControl : MonoBehaviour
             motionProvider.moveSpeed = 0.0f;
             leftHandParticles.Play();
             leftHandLine.lineLength = 0.0f;
-            leftHandAudio.Play();
+            
+            if(!leftRocketWasRunning) {
+                leftHandAudio.Play();
+                leftRocketWasRunning = true;
+            }
         }
 
         else {
             leftHandParticles.Stop();
             leftHandLine.lineLength = 10.0f;
             leftHandAudio.Stop();
+            leftRocketWasRunning = false;
         }
 
         // If button four was pressed, toggle whether or not the rigid body rotation is locked
